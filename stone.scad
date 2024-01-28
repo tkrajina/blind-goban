@@ -2,10 +2,11 @@ $fn = 50;
 
 stone_side = 19;
 line_distance = 20;
-line = 1;
+line = 0.7;
 
-module stone(diameter, thickness, black)
+module stone(thickness, black)
 {
+    diameter = stone_side;
     resize([diameter, diameter, thickness])
         sphere(10);
     translate([0, 0, -thickness/2])
@@ -34,7 +35,7 @@ module stone2(thickness, black)
         translate([0, 0, -thickness/2])
             cube([2, diameter, thickness], center=true);
         translate([0, 0, -thickness/2])
-            cube([diameter, 2, thickness], center=true);
+            cube([diameter, 2.25, thickness], center=true);
     }
    if (black)
    {
@@ -54,9 +55,16 @@ module goban(side)
     {
         echo(i)
         translate([line_distance/2 - line/2, line_distance/2 + i * line_distance - line/2, thickness])
-            cube([line_distance*(side-1), line, 2]);
-
+            cube([line_distance*(side-1), line, 2.5]);
+        translate([line_distance/2 + i * line_distance - line/2, line_distance/2 - line/2, thickness])
+            cube([line, line_distance*(side-1), 2.5]);
     }
 }
 
 goban(5);
+
+translate([0, -1 * stone_side, 0])
+    stone2(6, true);
+
+translate([0, -2.5 * stone_side, 0])
+    stone2(6, false);
