@@ -84,5 +84,7 @@ module goban(side)
 translate([0, -1 * stone_side, 0])
     stone2(6, true);
 
+/*
 translate([0, -2.5 * stone_side, 0])
     stone2(6, false);
+*/
