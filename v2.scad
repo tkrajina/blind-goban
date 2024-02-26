@@ -1,6 +1,6 @@
 $fn = 50;
 
-stone_side = 20;
+stone_side = 15;
 
 line_distance = 20;
 line = 0.7;
@@ -51,10 +51,10 @@ module stone(black)
 
 }
 
-translate([-stone_side, -stone_side, 0])
-    stone();
+//translate([-stone_side, -stone_side, 0])
+//    stone();
 translate([-stone_side, stone_side, 0])
     stone(true);
 //stone_hole();
-goban_base(2);
+//goban_base(9);
 
