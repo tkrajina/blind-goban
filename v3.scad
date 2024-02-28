@@ -1,6 +1,6 @@
 $fn = 50;
 
-size = 13;
+size = 9;
 line_distance = 16;
 stone_thickness = 3;
 
@@ -25,28 +25,42 @@ hoshi9 = [
     [6, 2], [6, 6],
 ];
 hoshi3 = [ // For testing
-    [1, 1]
+    [0, 0]
 ];
 
-
-hoshi = size == 19 ? hoshi19 : size == 13 ? hoshi13 : size == 9 ? hoshi9 : size == 3 ? hoshi3 : [];
+hoshi = size == 19 ? hoshi19 : size == 13 ? hoshi13 : size == 9 ? hoshi9 : size == 3 || size == 2 || size == 1 ? hoshi3 : size == 2 ? hoshi3 : [];
 
 module stone(black) {
-    round_radius = 0.1;
-    translate([0, 0, round_radius])
+    round_radius = 0;
+    translate([0, 0, stone_thickness])
     minkowski()
     {
-        resize([stone_radius * 2 - round_radius * 2, stone_radius * 2 - round_radius * 2, stone_thickness - round_radius * 2])
-        cylinder(1, 1, 1);
+        union()
+        {
+            translate([0, 0, stone_thickness])
+                resize([stone_radius * 2 - round_radius * 2, stone_radius * 2 - round_radius * 2, stone_radius * .5])
+                    sphere(stone_radius);
+            resize([stone_radius * 2 - round_radius * 2, stone_radius * 2 - round_radius * 2, stone_thickness - round_radius * 2])
+                cylinder(1, 1, 1);
+        }
         sphere(round_radius);
     }
    if (black)
    {
-       cylinder(stone_thickness+ .5, 2.5, 2.5, center=false);
+    minkowski()
+    {
+       h = .3;
+       translate([0, 0, stone_thickness+stone_radius/2 + 0.75])
+        cylinder(h, 1, 1, center=false);
+       sphere(1);
+    }
    } 
 }
 
 module goban() {
+    for(v=[0:len(hoshi)-1]) {
+        hoshi(hoshi[v][0], hoshi[v][1]);
+    }
     difference()
     {
         hull()
@@ -116,24 +130,12 @@ module hoshi(col, row) {
         }
 }
 
-difference()
-{
-    goban();
-    /*
-    translate([0, 0, stone_thickness+0.51])
-        grid();
-    */
-}
-
+//goban();
 
 /*
 translate([0, 0, 5])
     grid();
 */
-
-for(v=[0:len(hoshi)-1]) {
-    hoshi(hoshi[v][0], hoshi[v][1]);
-}
 
 /*
 translate([0, 0, stone_thickness + 2])
@@ -145,3 +147,5 @@ translate([-20, -20, 0])
     stone();
 translate([-40, -20, 0])
     stone(true);
+/*
+*/
