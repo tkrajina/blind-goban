@@ -2,12 +2,12 @@ $fn = 50;
 
 size = 9;
 line_distance = 16;
-stone_thickness = 3;
+stone_thickness = 4;
 
 echo("size", size*line_distance);
 
 hole_radius = (line_distance - 1) / 2;
-stone_radius = hole_radius - 0.5;
+stone_radius = hole_radius - 0.4;
 board_thickness = stone_thickness + 1.5;
 
 hoshi19 = [
@@ -31,30 +31,21 @@ hoshi3 = [ // For testing
 hoshi = size == 19 ? hoshi19 : size == 13 ? hoshi13 : size == 9 ? hoshi9 : size == 3 || size == 2 || size == 1 ? hoshi3 : size == 2 ? hoshi3 : [];
 
 module stone(black) {
-    round_radius = 0;
     translate([0, 0, stone_thickness])
-    minkowski()
+    union()
     {
-        union()
+        cylinder(stone_thickness * .1, stone_radius, stone_radius * .8);
+        if (black)
         {
-            translate([0, 0, stone_thickness])
-                resize([stone_radius * 2 - round_radius * 2, stone_radius * 2 - round_radius * 2, stone_radius * .5])
-                    sphere(stone_radius);
-            resize([stone_radius * 2 - round_radius * 2, stone_radius * 2 - round_radius * 2, stone_thickness - round_radius * 2])
-                cylinder(1, 1, 1);
-        }
-        sphere(round_radius);
+            minkowski()
+            {
+               h = .3;
+               cylinder(h, 1, 1);
+               sphere(1);
+            }
+        } 
     }
-   if (black)
-   {
-    minkowski()
-    {
-       h = .3;
-       translate([0, 0, stone_thickness+stone_radius/2 + 0.75])
-        cylinder(h, 1, 1, center=false);
-       sphere(1);
-    }
-   } 
+    cylinder(stone_thickness, stone_radius, stone_radius);
 }
 
 module goban() {
@@ -103,13 +94,25 @@ module grid() {
         translate([i*line_distance-width/2, -width/2, 0])
             cube([width, line_distance * (size-1) + width, width]);
         translate([-width/2, i*line_distance-width/2, 0])
-            cube([line_distance * (size-1), width, width]);
+            cube([line_distance *   (size-1), width, width]);
     }
 }
 
 module hoshi(col, row) {
-    h = 1;
+    r = 1.5;
+    d = .5+r+stone_radius;
     translate([line_distance * col, line_distance * row, board_thickness])
+        union() {
+            translate([d/sqrt(2), d/sqrt(2), 0])
+                cylinder(.5, r, r);
+            translate([-d/sqrt(2), d/sqrt(2), 0])
+                cylinder(.5, r, r);
+            translate([-d/sqrt(2), -d/sqrt(2), 0])
+                cylinder(.5, r, r);
+            translate([d/sqrt(2), -d/sqrt(2), 0])
+                cylinder(.5, r, r);
+        }
+    /*
         difference()
         {
             difference()
@@ -121,31 +124,24 @@ module hoshi(col, row) {
             union()
             {
                 rotate([0, 0, 0])
-                    translate([-stone_radius/2.5, -1.5*stone_radius, 0])
-                        cube([stone_radius/1.25, 3*stone_radius, h]);
+                    translate([-stone_radius/2, -1.5*stone_radius, 0])
+                        cube([stone_radius/1, 3*stone_radius, h]);
                 rotate([0, 0, 90])
-                    translate([-stone_radius/2.5, -1.5*stone_radius, 0])
-                        cube([stone_radius/1.25, 3*stone_radius, h]);
+                    translate([-stone_radius/2, -1.5*stone_radius, 0])
+                        cube([stone_radius/1, 3*stone_radius, h]);
             }
         }
+    */
 }
 
-//goban();
+goban();
+
+translate([-stone_radius*3, 0, 0]) stone(true);
+translate([-stone_radius*6, 0, 0]) stone(false);
 
 /*
-translate([0, 0, 5])
-    grid();
-*/
-
-/*
-translate([0, 0, stone_thickness + 2])
-    stone();
-*/
-
-
 translate([-20, -20, 0])
     stone();
 translate([-40, -20, 0])
     stone(true);
-/*
 */
