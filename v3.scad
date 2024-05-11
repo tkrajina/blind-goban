@@ -133,15 +133,3 @@ module hoshi(col, row) {
         }
     */
 }
-
-goban();
-
-translate([-stone_radius*3, 0, 0]) stone(true);
-translate([-stone_radius*6, 0, 0]) stone(false);
-
-/*
-translate([-20, -20, 0])
-    stone();
-translate([-40, -20, 0])
-    stone(true);
-*/
